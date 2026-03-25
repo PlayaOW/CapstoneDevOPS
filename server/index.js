@@ -9,7 +9,16 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use('/music', express.static(path.join(__dirname, 'public/music')));
+
+// Handle music files: Redirect to CDN if configured, otherwise serve locally
+const MUSIC_CDN = process.env.MUSIC_CDN_URL;
+if (MUSIC_CDN) {
+  app.get('/music/:file', (req, res) => {
+    res.redirect(`${MUSIC_CDN}/${req.params.file}`);
+  });
+} else {
+  app.use('/music', express.static(path.join(__dirname, 'public/music')));
+}
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
