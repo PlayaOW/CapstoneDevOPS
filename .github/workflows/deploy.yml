@@ -35,7 +35,7 @@ jobs:
         run:  docker rm pomodoro-app || true
 
       - name: Run New Container
-        run:  docker run --name pomodoro-app --env-file ./server/.env -p 80:5000 -d pomodoro-prod
+        run:  docker run --name pomodoro-app --env-file ./server/.env -p 8080:5000 -d pomodoro-prod
 
       - name: Clean Up Unused Docker Images
         run:  docker image prune -f
