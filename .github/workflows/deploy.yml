@@ -1,0 +1,39 @@
+name: Deploy Pomodoro Quest
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # CRITICAL: This tells GitHub to wait for your specific Ubuntu server to ask for the job
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Inject Environment Variables
+        run: |
+          echo "DB_HOST=${{ secrets.DB_HOST }}" > server/.env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> server/.env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> server/.env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> server/.env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> server/.env
+          echo "PORT=5000" >> server/.env
+
+      - name: Build New Docker Image
+        run: sudo docker build -t pomodoro-prod .
+
+      - name: Stop Old Container (Ignore error if it doesn't exist)
+        run: sudo docker stop pomodoro-app || true
+
+      - name: Remove Old Container (Ignore error if it doesn't exist)
+        run: sudo docker rm pomodoro-app || true
+
+      - name: Run New Container
+        run: sudo docker run --name pomodoro-app --env-file ./server/.env -p 80:5000 -d pomodoro-prod
+
+      - name: Clean Up Unused Docker Images
+        run: sudo docker image prune -f
