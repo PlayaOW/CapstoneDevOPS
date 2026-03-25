@@ -1,0 +1,31 @@
+
+✦ Yes, that is exactly correct! You are now moving from the "Development" phase to the
+"Operations/Deployment" phase.
+
+To help you write your Ansible playbooks, here is a checklist of what needs to happen on
+each server:
+
+1. Database Server (VM + Docker)
+Your Ansible playbook for this machine should:
+* Install Docker and Docker Compose (optional, but easier).
+* Copy the server/schema.sql file to the VM.
+* Start a MySQL container.
+* Crucial Step: Mount the schema.sql to /docker-entrypoint-initdb.d/schema.sql inside the
+container. This ensures your tables (Users, Sessions) are created automatically when the
+container starts.
+
+2. Web Server
+Your Ansible playbook for this machine should:
+* Install Node.js (v18+).
+* Copy the entire pomodoroGame project folder.
+* Backend:
+* Run npm install inside the server/ directory.
+* Update server/.env: Change DB_HOST=localhost to the IP address of your Database VM.
+* Start the server (using a tool like pm2 is recommended for production).
+* Frontend:
+* Important: Before you run the playbook, you need to update client/src/App.jsx.
+* Currently, it points to http://localhost:5000. You must change API_BASE and
+MUSIC_BASE to the Public IP or Domain of your Web Server, otherwise, it will try to
+connect to the user's own computer.
+* Run npm install and npm run build inside client/.
+* Serve the client/dist folder using Nginx or Apache.

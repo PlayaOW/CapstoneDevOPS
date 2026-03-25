@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+@theme {
+  --color-lofi-beige: #F5F5DC;
+  --color-lofi-brown: #3E2723;
+  --color-lofi-clay: #A1887F;
+  --color-lofi-warm: #D7CCC8;
+}
+
+:root {
+  --bg-primary: #1a1a1a;
+  --text-primary: #e0e0e0;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+.light-mode {
+  --bg-primary: #F5F5DC; /* lofi-beige */
+  --text-primary: #3E2723; /* lofi-brown */
+  --glass-bg: rgba(62, 39, 35, 0.05);
+  --glass-border: rgba(62, 39, 35, 0.1);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.glass {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+}
+
+.btn-primary {
+  @apply bg-lofi-clay hover:bg-[#8d756c] text-white px-6 py-2 rounded-xl transition-all active:scale-95;
+}
