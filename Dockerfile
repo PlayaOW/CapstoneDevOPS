@@ -19,10 +19,6 @@ FROM node:22
 WORKDIR /pomodoroGame/server
 
 COPY server/package*.json ./
-
-ENV npm_config_jobs=1
-ENV NODE_OPTIONS=--max-old-space-size=1024
-
 RUN npm ci
 
 COPY server/ ./

@@ -9,6 +9,8 @@ jobs:
   deploy:
     # CRITICAL: This tells GitHub to wait for your specific Ubuntu server to ask for the job
     runs-on: self-hosted
+    env:
+      DOCKER_BUILDKIT: 0
 
     steps:
       - name: Checkout Source Code
