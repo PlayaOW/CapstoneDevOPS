@@ -307,6 +307,115 @@ git branch -M main
 git push -u origin main
 ```
 - In this case I did not have to conf git, since I already had it conf to my email and username.
+- Now moving onto the actual building of CI/CD pipeline for this web deployment project.
+- Create a directory inside of the root dir of web app name it .gitignore using ```shell mkdir .gitignore ```
+- Inside of .github, create another dir called workflows and inside of that create deploy.yml
+```YAML
+name: Deploy Pomodoro Quest
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # CRITICAL: This tells GitHub to wait for your specific Ubuntu server to ask for the job
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Inject Environment Variables
+        run: |
+          echo "DB_HOST=${{ secrets.DB_HOST }}" > server/.env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> server/.env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> server/.env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> server/.env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> server/.env
+          echo "PORT=5000" >> server/.env
+
+      - name: Build New Docker Image
+        run: sudo docker build -t pomodoro-prod .
+
+      - name: Stop Old Container (Ignore error if it doesn't exist)
+        run: sudo docker stop pomodoro-app || true
+
+      - name: Remove Old Container (Ignore error if it doesn't exist)
+        run: sudo docker rm pomodoro-app || true
+
+      - name: Run New Container
+        run: sudo docker run --name pomodoro-app --env-file ./server/.env -p 8080:5000 -d pomodoro-prod
+
+      - name: Clean Up Unused Docker Images
+        run: sudo docker image prune -f
+```
+- Now before we push it on github, as we know our environment variables are not pushed into github when it was committed using git. There is no way github can know value of variables such as DB_HOST, or DB_USER etc. We go into the repo and click settings.
+- Inside of setting, look for secrets and variables. From the dropdown, choose "Actions"
+- Inside of Actions, click the new repo secrets button and db environment variables that are needed to connect the frontend to the backend.
+- After this we need to install Github RUnner service so that github cloud can talk to the hosting machine.
+- We would need the runner script which is typically given by Github.
+- Go to the repo setting, and look for Actions tab on the left and from the dropdown chose runners.
+- Click the green self hosted runner button, and start executing command provided..
+```shell
+# Create a folder
+$ mkdir actions-runner && cd actions-runner
+Copied!
+# Download the latest runner package
+$ curl -o actions-runner-linux-x64-2.333.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.333.0/actions-runner-linux-x64-2.333.0.tar.gz
+Copied!
+# Optional: Validate the hash
+$ echo "7ce6b3fd8f879797fcc252c2918a23e14a233413dc6e6ab8e0ba8768b5d54475  actions-runner-linux-x64-2.333.0.tar.gz" | shasum -a 256 -c
+Copied!
+# Extract the installer
+$ tar xzf ./actions-runner-linux-x64-2.333.0.tar.gz
+./config.sh --url https://github.com/PlayaOW/CapstoneDevOPS --token A673TLDEW2TWUWB6NI2GK43JYNLT6
+
+```
+- We also need to create a dockerignore to stop copying garbage from local machine.
+- After creating the dockerfile and getting error looking at the error log, it turns out it was a problem with the older node version.
+```YAML
+#NEW DOCKERFILE FOR CI/CD
+FROM node:22 AS client-build
+
+WORKDIR /pomodoroGame/client
+
+COPY client/package*.json ./
+
+ENV npm_config_jobs=1
+ENV NODE_OPTIONS=--max-old-space-size=1024
+
+RUN npm ci
+
+COPY client/ ./
+
+RUN npm run build
+
+
+FROM node:22
+
+WORKDIR /pomodoroGame/server
+
+COPY server/package*.json ./
+RUN npm ci
+
+COPY server/ ./
+
+COPY --from=client-build /pomodoroGame/client/dist ./public
+
+EXPOSE 5000
+
+CMD ["node", "index.js"]
+``` 
+- DockerIgnore file:
+```txt
+node_modules
+*/node_modules
+npm-debug.log
+.git
+.env*
+```
 - 
 
 
