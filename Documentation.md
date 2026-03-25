@@ -314,42 +314,44 @@ git push -u origin main
 name: Deploy Pomodoro Quest
 
 on:
-  push:
-    branches:
-      - main
+push:
+branches:
+- main
 
 jobs:
-  deploy:
-    # CRITICAL: This tells GitHub to wait for your specific Ubuntu server to ask for the job
-    runs-on: self-hosted
+deploy:
+# CRITICAL: This tells GitHub to wait for your specific Ubuntu server to ask for the job
+runs-on: self-hosted
+env:
+DOCKER_BUILDKIT: 0
 
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
+steps:
+- name: Checkout Source Code
+uses: actions/checkout@v4
 
-      - name: Inject Environment Variables
-        run: |
-          echo "DB_HOST=${{ secrets.DB_HOST }}" > server/.env
-          echo "DB_USER=${{ secrets.DB_USER }}" >> server/.env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> server/.env
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> server/.env
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> server/.env
-          echo "PORT=5000" >> server/.env
+- name: Inject Environment Variables
+run: |
+echo "DB_HOST=${{ secrets.DB_HOST }}" > server/.env
+echo "DB_USER=${{ secrets.DB_USER }}" >> server/.env
+echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> server/.env
+echo "DB_NAME=${{ secrets.DB_NAME }}" >> server/.env
+echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> server/.env
+echo "PORT=5000" >> server/.env
 
-      - name: Build New Docker Image
-        run: sudo docker build -t pomodoro-prod .
+- name: Build New Docker Image
+run:  docker build --no-cache -t pomodoro-prod .
 
-      - name: Stop Old Container (Ignore error if it doesn't exist)
-        run: sudo docker stop pomodoro-app || true
+- name: Stop Old Container (Ignore error if it doesn't exist)
+run: docker stop pomodoro-app || true
 
-      - name: Remove Old Container (Ignore error if it doesn't exist)
-        run: sudo docker rm pomodoro-app || true
+- name: Remove Old Container (Ignore error if it doesn't exist)
+run:  docker rm pomodoro-app || true
 
-      - name: Run New Container
-        run: sudo docker run --name pomodoro-app --env-file ./server/.env -p 8080:5000 -d pomodoro-prod
+- name: Run New Container
+run:  docker run --name pomodoro-app --env-file ./server/.env -p 8080:5000 -d pomodoro-prod
 
-      - name: Clean Up Unused Docker Images
-        run: sudo docker image prune -f
+- name: Clean Up Unused Docker Images
+run:  docker image prune -f
 ```
 - Now before we push it on github, as we know our environment variables are not pushed into github when it was committed using git. There is no way github can know value of variables such as DB_HOST, or DB_USER etc. We go into the repo and click settings.
 - Inside of setting, look for secrets and variables. From the dropdown, choose "Actions"
