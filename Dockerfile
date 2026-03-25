@@ -1,4 +1,4 @@
-FROM node:18-alpine AS client-build
+FROM node:22-alpine AS client-build
 # Using a lightweight node image to build the frontend
 
 # Set the working dir for the image
@@ -15,7 +15,7 @@ COPY client/ ./
 RUN npm run build
 
 # Create another node image for the backend server
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Set the working dir
 WORKDIR /pomodoroGame/server
