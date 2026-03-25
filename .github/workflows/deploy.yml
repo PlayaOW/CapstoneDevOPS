@@ -24,7 +24,7 @@ jobs:
           echo "PORT=5000" >> server/.env
 
       - name: Build New Docker Image
-        run:  docker build -t pomodoro-prod .
+        run:  docker build --no-cache -t pomodoro-prod .
 
       - name: Stop Old Container (Ignore error if it doesn't exist)
         run: docker stop pomodoro-app || true
