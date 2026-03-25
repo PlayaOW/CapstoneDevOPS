@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Handle music files: Redirect to CDN if configured, otherwise serve locally
-const MUSIC_CDN = process.env.MUSIC_CDN_URL;
+const MUSIC_CDN = process.env.MUSIC_CDN_URL || 'https://pub-c14bfc8648b04a798e410b3f82a156ea.r2.dev';
 if (MUSIC_CDN) {
   app.get('/music/:file', (req, res) => {
     res.redirect(`${MUSIC_CDN}/${req.params.file}`);

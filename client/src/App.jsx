@@ -4,7 +4,7 @@ import { Play, Pause, RotateCcw, Music, User, LogIn, Trophy, Leaf, Book, Shield,
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE = '/api';
-const MUSIC_BASE = '/music';
+const MUSIC_BASE = 'https://pub-c14bfc8648b04a798e410b3f82a156ea.r2.dev';
 
 function App() {
   const [timeLeft, setTimeLeft] = useState(25 * 60);
