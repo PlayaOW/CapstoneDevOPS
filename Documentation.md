@@ -289,7 +289,7 @@ sudo docker build -t pomodoro-game .
 => [stage-1 6/6] COPY --from=client-build /pomodoroGame/client/dist ./public           1.1s
 => exporting to image                                                                  3.1s
 => => exporting layers                                                                 2.8s
-=> => writing image sha256:8cd4f0d60ec884c54eb70b9e95b41d24438176ae67be18adad7f8c918c  0.0s
+=> => writing image YOLLO  0.0s
 => => naming to docker.io/library/pomodoro-game
 ```
 - Now we actually run the created images: ```shell docker run 5000:5000 -d pomodoro-gamev2.0```
