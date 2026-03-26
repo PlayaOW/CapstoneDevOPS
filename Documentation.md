@@ -418,7 +418,41 @@ npm-debug.log
 .git
 .env*
 ```
-- 
+- After completing the CI/CD pipeline I bought a Cloudfare Domain name and mapped it to my web server using cloudflared tunnel.
+```shell
+sudo mkdir -p --mode=0755 /usr/share/keyrings
+1123  curl -fsSL https://pkg.cloudflare.com/cloudflare-public-v2.gpg | sudo tee /usr/share/keyrings/cloudflare-public-v2.gpg >/dev/null
+1124  echo "deb [signed-by=/usr/share/keyrings/cloudflare-public-v2.gpg] https://pkg.cloudflare.com/cloudflared any main" | sudo tee /etc/apt/sources.list.d/cloudflared.list
+1125  sudo apt-get update && sudo apt-get install cloudflared -y
+1126  sudo apt update && sudo apt upgrade -y
+1127  sudo apt-get install cloudfared -y
+1128  sudo apt-get install cloudflared -y
+1129  cloudflared tunnel login
+1130  cloudflared tunnel create my-home-tunnel
+1131  cloudflared tunnel route dns my-home-tunnel
+1132  cloudflared tunnel route dns my-home-tunnel pomodorogame.org
+1133  cloudflared tunnel run my-home-tunnel
+1134  vim ~/.cloudflared/config.yml
+```
+- The config looks like this:
+```YAML
+url: http://192.168.x.x:8080
+tunnel: x
+credentials-file: /home/x/.cloudflared/x.json
+
+ingress:
+- hostname: pomodorogame.org
+service: http://192.168.x.x:8080
+- service: http_status:404
+```
+- I installed cloudflared service to keep the service on in the background even when SSH terminal is closed.
+```shell
+sudo cloudflared --config /home/rayhomelab/.cloudflared/config.yml service install
+1140  sudo systemctl start cloudflared
+1141  sudo systemctl enable cloudflared
+1142  sudo systemctl status cloudflared
+```
+
 
 
 
