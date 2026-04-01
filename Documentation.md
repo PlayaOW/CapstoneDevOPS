@@ -504,6 +504,26 @@ res.status(500).end(ex);
 - After quite a lot of back and forth and configuration finally got prometheus to work:
 ![Prometheus UP & Running](prometheusUP.png)
 
+- Setting up Grafana and connecting prometheus to grafana.
+- https://www.youtube.com/watch?v=yrscZ-kGc_Y
+- docker compose file for grafana docker image:
+```yml
+version: "5.1"
+services:
+grafana:
+image: grafana/grafana
+container_name: grafanaWeb
+restart: unless-stopped
+ports:
+- '5240:3000'
+volumes:
+- grafana-storage:/var/lib/grafana
+volumes:
+grafana-storage: {}
 
-
+```
+- The Grafana web interface can be accessed locally using the IP_ADDR_WEB_SERVER:PORTFORGRAFANA, which in this case would IP:5240
+- !['Grafana Web UI'](GrafanaWebUI.png)
+- ![Landing Grafana Web UI](LandingGrafana.png)
+- 
 
