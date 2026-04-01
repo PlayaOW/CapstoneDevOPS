@@ -458,6 +458,50 @@ sudo cloudflared --config /home/rayhomelab/.cloudflared/config.yml service insta
 1141  sudo systemctl enable cloudflared
 1142  sudo systemctl status cloudflared
 ```
+- Prometheus and Grafana Setup
+- https://linuxconfig.org/unlock-powerful-monitoring-your-guide-to-prometheus-and-grafana
+- https://prometheus.io/docs/prometheus/latest/installation/
+- Prometheus.yml or prometheus conf file:
+```yml
+scrape_configs:
+- job_name: 'prometheus'
+
+# Adding scrape interval of 5s for dft prometheus scrape job
+scrape_interval: 5s
+scrape_timeout: 5s
+
+static_configs:
+- targets: ['localhost:9090']
+- job_name: 'web server rsc'
+scrape_interval: 10s
+scrape_timeout: 10s
+
+static_configs:
+- targets: ['192.168.1.250:8080']
+```
+- This conf file takes default prometheus scrape jobs and scrape jobs for the web server, which lives on 192.168.1.250:8080
+- Now before we create a prometheus container and run it to scrape data from our web server, we need to install prom-client and modify my index.js file to expose its data to prometheus.
+- I also had to add this to my index.js
+```js
+const client = require('prom-client');
+
+const app = express();
+
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics({ register: client.register });
+
+app.get('/metrics', async (req, res) => {
+try {
+res.set('Content-Type', client.register.contentType);
+res.end(await client.register.metrics());
+} catch (ex) {
+res.status(500).end(ex);
+}
+});
+
+```
+- After quite a lot of back and forth and configuration finally got prometheus to work:
+![Prometheus UP & Running](prometheusUP.png)
 
 
 
