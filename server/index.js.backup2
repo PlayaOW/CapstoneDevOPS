@@ -4,20 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
 const path = require('path');
-const client = require('prom-client')
 require('dotenv').config();
-
-const collectDefaultMetrics = client.collectDefaultMetrics;
-collectDefaultMetrics({ register: client.register });
-
-app.get('/metrics', async (req, res) => {
-	try {
-		res.set('Content-Type', client.register.contentType);
-		res.end(await client.register.metrics());
-	} catch (ex) {
-		res.status(500).end(ex);
-	}
-});
 
 const app = express();
 app.use(cors());
