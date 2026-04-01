@@ -461,6 +461,7 @@ sudo cloudflared --config /home/rayhomelab/.cloudflared/config.yml service insta
 - Prometheus and Grafana Setup
 - https://linuxconfig.org/unlock-powerful-monitoring-your-guide-to-prometheus-and-grafana
 - https://prometheus.io/docs/prometheus/latest/installation/
+- https://www.npmjs.com/package/prom-client
 - Prometheus.yml or prometheus conf file:
 ```yml
 scrape_configs:
@@ -477,9 +478,9 @@ scrape_interval: 10s
 scrape_timeout: 10s
 
 static_configs:
-- targets: ['192.168.1.250:8080']
+- targets: ['192.168.x.x:x']
 ```
-- This conf file takes default prometheus scrape jobs and scrape jobs for the web server, which lives on 192.168.1.250:8080
+- This conf file takes default prometheus scrape jobs and scrape jobs for the web server, which lives on 192.168.x.x:x
 - Now before we create a prometheus container and run it to scrape data from our web server, we need to install prom-client and modify my index.js file to expose its data to prometheus.
 - I also had to add this to my index.js
 ```js
