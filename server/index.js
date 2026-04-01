@@ -6,6 +6,7 @@ const db = require('./db');
 const path = require('path');
 const client = require('prom-client')
 require('dotenv').config();
+const app = express();
 
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ register: client.register });
@@ -19,7 +20,7 @@ app.get('/metrics', async (req, res) => {
 	}
 });
 
-const app = express();
+//const app = express();
 app.use(cors());
 app.use(express.json());
 
