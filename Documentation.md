@@ -421,7 +421,7 @@ npm-debug.log
 - This also takes the necessary environment variable from the .env file. These environment variables are needed to create the docker containers especially for the mysql container which need these credentials for the frontend to be able to communicate with the database server.
 - The problems I came across while setting this up is problem with node and memory issues. Creating lightweight container from github actions did not work due to memory being low. Had touse medium capacity container for this to work and github actions to be able to create the docker containers.
 ## End of milestone, Developed End-to-End Automated Deployment. Tested and Functioning. Date:Apr 1, 2026.
-[CI/CD pipeline](CDPipeLine.png)
+- [CI/CD pipeline](CDPipeLine.png)
 ## TODO BUY CLOUDFARE DOMAIN FOR THE WEB APP
 
 - After completing the CI/CD pipeline I bought a Cloudfare Domain name and mapped it to my web server using cloudflared tunnel.
