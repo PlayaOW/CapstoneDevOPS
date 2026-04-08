@@ -1,0 +1,37 @@
+---
+- hosts: dbservers
+  tasks:
+    - name: Create a dir named databases
+      ansible.builtin.file:
+        path: ~/Documents/database
+        state: directory
+      tags: crdir
+
+    - name: Copying Schema.SQL to managed node
+      ansible.builtin.copy:
+        src: /home/playaow/Documents/ET4999/pomodoroGame/server/schema.sql
+        dest: ~/Documents/database/schema.sql
+      tags: cpsql
+
+    - name: Making sure python3-docker is installed
+      ansible.builtin.apt:
+        name: python3-docker
+        state: present
+      become: yes  # apt usually requires sudo
+      tags: py3docker
+
+    - name: Run MySQL Docker container
+      community.docker.docker_container:
+        name: mysql-db
+        image: mysql:latest
+        state: started
+        recreate: yes
+        restart_policy: always
+        published_ports:
+          - "3306:3306"
+        env:
+          MYSQL_ROOT_PASSWORD: "Y0llowM3#p3ndeh0$" # Matches your server/.env
+          MYSQL_DATABASE: "pomodoro_db"
+        volumes:
+          - "~/Documents/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql"
+      tags: dkr

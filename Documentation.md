@@ -525,5 +525,58 @@ grafana-storage: {}
 - The Grafana web interface can be accessed locally using the IP_ADDR_WEB_SERVER:PORTFORGRAFANA, which in this case would IP:5240
 - !['Grafana Web UI'](GrafanaWebUI.png)
 - ![Landing Grafana Web UI](LandingGrafana.png)
-- 
+- ![Grafana Monitoring System Up](GrafanaDashboard.png)
+- I now have grafana monitoring system up and running and it uses data collected by prometheus and presents them in a nicer manner.
+- Using Apache2 Utils to stress test the docker containers.
+https://httpd.apache.org/docs/2.4/programs/ab.html
+- Stress Test Result:
+```shell
+ab -n 50000 -c 200 http://192.168.1.250:8080/
+```
+```txt
+This is ApacheBench, Version 2.3 <$Revision: 1903618 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 192.168.1.250 (be patient)
+
+
+Server Software:
+Server Hostname:        192.168.1.250
+Server Port:            8080
+
+Document Path:          /
+Document Length:        459 bytes
+
+Concurrency Level:      200
+Time taken for tests:   20.640 seconds
+Complete requests:      50000
+Failed requests:        0
+Total transferred:      38950000 bytes
+HTML transferred:       22950000 bytes
+Requests per second:    2422.42 [#/sec] (mean)
+Time per request:       82.562 [ms] (mean)
+Time per request:       0.413 [ms] (mean, across all concurrent requests)
+Transfer rate:          1842.84 [Kbytes/sec] received
+
+Connection Times (ms)
+min  mean[+/-sd] median   max
+Connect:        0    0   0.6      0      11
+Processing:    12   82   5.0     82     117
+Waiting:        1   82   5.3     82     116
+Total:         13   82   4.7     82     117
+
+Percentage of the requests served within a certain time (ms)
+50%     82
+66%     83
+75%     84
+80%     85
+90%     87
+95%     90
+98%     93
+99%     94
+100%    117 (longest request)
+```
+- This is what Grafana looked like when running the stress test:
+![Grafana Stress Test of Server](stressTest.png)
 
