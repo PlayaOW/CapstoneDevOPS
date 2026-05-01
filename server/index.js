@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const db = require('./db');
 const path = require('path');
 const client = require('prom-client')
-require('dotenv').config();
+require('dotenv').config({ override: true });
 const app = express();
 
 const collectDefaultMetrics = client.collectDefaultMetrics;
