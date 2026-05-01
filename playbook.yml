@@ -30,7 +30,7 @@
         published_ports:
           - "3306:3306"
         env:
-          MYSQL_ROOT_PASSWORD: "Y0llowM3#p3ndeh0$" # Matches your server/.env
+          MYSQL_ROOT_PASSWORD: "##########" # Matches your server/.env
           MYSQL_DATABASE: "pomodoro_db"
         volumes:
           - "~/Documents/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql"
